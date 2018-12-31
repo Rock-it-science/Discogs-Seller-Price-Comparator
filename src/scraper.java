@@ -23,7 +23,6 @@ public class scraper {
 		File[] files = {
 				new File("green-vinyl.txt"),
 				new File("polar-bear64.txt"), 
-				new File("TAXFREE.txt"), //Same as green-vinyl (remove)
 				new File("ARGONMENDIVALENCIA.txt"),
 				new File("Collectors-Choice.txt"),
 				new File("love-vinyl-records.txt"), 

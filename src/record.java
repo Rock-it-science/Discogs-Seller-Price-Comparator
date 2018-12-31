@@ -11,7 +11,7 @@ public class record {
 	//Since the scraper only knows the title at first, we need a contructor for just the title
 	record(String title){
 		this.title = title;
-		this.prices = new Double[13];
+		this.prices = new Double[12];
 		this.median = null;
 	}
 	
