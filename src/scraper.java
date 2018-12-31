@@ -7,8 +7,11 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 
 import jxl.Workbook;
+import jxl.format.Colour;
 import jxl.write.Label;
 import jxl.write.Number;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
@@ -159,6 +162,21 @@ public class scraper {
 		WritableWorkbook workbook = Workbook.createWorkbook(new File("output.xls"));
 		//Create a sheet
 		WritableSheet sheet = workbook.createSheet("sheet", 0);
+		
+		//Create coloured cell formats
+		WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
+		
+		WritableCellFormat Greenformat = new WritableCellFormat(font);
+			Greenformat.setBackground(Colour.GREEN);
+		WritableCellFormat Redformat = new WritableCellFormat(font);
+			Redformat.setBackground(Colour.RED);
+		WritableCellFormat DarkRedformat = new WritableCellFormat(font);
+			DarkRedformat.setBackground(Colour.DARK_RED);
+		WritableCellFormat LightGreenformat = new WritableCellFormat(font);
+			LightGreenformat.setBackground(Colour.LIGHT_GREEN);
+		WritableCellFormat Yellowformat = new WritableCellFormat(font); 
+			Yellowformat.setBackground(Colour.YELLOW);
+	
 		//Add titles for columns
 		sheet.addCell(new Label(0, 0, "Title"));
 		sheet.addCell(new Label(1, 0, "Median"));
@@ -175,7 +193,35 @@ public class scraper {
 				sheet.addCell(new Number(1, x+1, records.get(x).median));
 				//Prices go in column C
 				if(records.get(x).prices[f] != null) {
-					sheet.addCell(new Number(f+2, x+1, records.get(x).prices[f]));
+					
+					//Price colouring
+					double p = records.get(x).prices[f];
+					double m = records.get(x).median;
+					//More than 25% less than median
+					if( p < (m * 0.75 ) ) {
+						sheet.addCell(new Number(f+2, x+1, p, Greenformat));
+					}
+						
+					//0-25% less than median
+					if( ( p > (m * 0.75 ) ) & (p < m) ) {
+						sheet.addCell(new Number(f+2, x+1, p, LightGreenformat));
+					}
+					
+					//Within 10% of median
+					if( ( p > (0.9*m) ) & (p < (1.1*m))) {
+						sheet.addCell(new Number(f+2, x+1, p, Yellowformat));
+					}
+							
+					//0-25% above median
+					if( ( p < (m * 1.25 ) ) & (p > m) ) {
+						sheet.addCell(new Number(f+2, x+1, p, Redformat));
+					}
+							
+					//More than 25% above median
+					if( p > (m * 1.25 ) ) {
+						sheet.addCell(new Number(f+2, x+1, p, DarkRedformat));
+					}
+					
 				}
 			}
 		}
