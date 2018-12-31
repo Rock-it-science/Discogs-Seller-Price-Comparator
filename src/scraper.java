@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -19,24 +20,28 @@ import jxl.write.biff.RowsExceededException;
 
 public class scraper {
 
-	public static void main(String[] args) throws IOException, RowsExceededException, WriteException {
+	public static void main(String[] args) throws IOException, RowsExceededException, WriteException, InterruptedException {
+		
+		//TODO Take different releases of same title into account
+		//TODO Take condition into account
+		//TODO Automatically fetch and convert shipping costs
+		
+		
 		
 		//Array of files, where each file is the html from a seller's page
 		//  Cannot get this automatically because it requirese authentication
 		seller[] sellers = {
 			//seller format: file, shippingBool, shippingCost
-			//TODO auto fetch and convert shipping costs
+			new seller(new File("VEVinyl.txt"), false, null),
+			new seller(new File("Collectors-Choice.txt"), true, 6.8),
+			new seller(new File("Silverplatters.txt"), false, null),
+			new seller(new File("RelevantRecords.txt"), false, null), 
+			new seller(new File("oldies-dot-com.txt"), false, null),
 			new seller(new File("green-vinyl.txt"), true, 29.60),
+			new seller(new File("love-vinyl-records.txt"), true, 23.17),
 			new seller(new File("polar-bear64.txt"), false, null),
 			new seller(new File("ARGONMENDIVALENCIA.txt"), false, null),
-			new seller(new File("Collectors-Choice.txt"), true, 6.8),
-			new seller(new File("love-vinyl-records.txt"), true, 23.17),
-			new seller(new File("oldies-dot-com.txt"), false, null),
-			new seller(new File("RelevantRecords.txt"), false, null), 
-			new seller(new File("Silverplatters.txt"), false, null),
 			new seller(new File("sorrystate.txt"), true, 13.63),
-			new seller(new File("VEVinyl.txt"), false, null),
-			new seller(new File("VinylExpressBV.txt"), false, null)
 		};
 		
 		//ArrayList of record objects
@@ -51,7 +56,7 @@ public class scraper {
 		//Index of records object with title currentTitle in records
 		int currentIndex = 0;
 		
-		int n = 3;	//Number of seller files to read
+		int n = 10;	//Number of seller files to read
 					//  Only first few files for now, any more raises HTML 429: too many requests
 				 	//TODO Make program wait sometimes so as not to exceed max number of requests
 		
@@ -136,15 +141,32 @@ public class scraper {
 					try{
 						release = Jsoup.connect(url).get().html();
 					}catch(HttpStatusException e) {
+						/*
 						//If we have done too many http requests, skip to writing stage
 						System.out.println("429 at " + url);
 						write(records, sellers, n);
-						System.exit(0);
+						System.exit(0);*/
+						
+						//If we get exception 429, pause for 10 seconds and then resume
+						System.out.println("429 at " + url + ", pausing for 60 seconds ... ");
+						TimeUnit.SECONDS.sleep(60);
+						//Try again
+						try {
+							release = Jsoup.connect(url).get().html();
+						}catch(HttpStatusException e2) {
+							//If it fails twice in a row, break and go to write
+							System.out.println("429 again");
+							write(records, sellers, n);
+							System.exit(0);
+						}
 					}
 					//Substring around median price
 					String medianString = release.substring(release.indexOf("Median")+16);
 					//Substring second delimeter, and parse to double
-					Double median = Double.parseDouble(medianString.substring(0, medianString.indexOf("</li>")));
+					Double median = 0.0;
+					try{
+						median = Double.parseDouble(medianString.substring(0, medianString.indexOf("</li>")));
+					}catch(NumberFormatException e3) {}//If empty string, median does not exist, leave median as 0
 					
 					//Set the median of the last item in records to this median
 					records.get(records.size()-1).setMedian(median);
@@ -197,6 +219,12 @@ public class scraper {
 					//Price colouring
 					double p = records.get(x).prices[f];
 					double m = records.get(x).median;
+					
+					//Median is 0 (never sold before)
+					if(m == 0.0) {
+						sheet.addCell(new Number(f+2, x+1, p));
+					}
+					
 					//More than 25% less than median
 					if( p < (m * 0.75 ) ) {
 						sheet.addCell(new Number(f+2, x+1, p, Greenformat));
