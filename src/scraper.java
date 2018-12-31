@@ -20,18 +20,20 @@ public class scraper {
 		
 		//Array of files, where each file is the html from a seller's page
 		//  Cannot get this automatically because it requirese authentication
-		File[] files = {
-				new File("green-vinyl.txt"),
-				new File("polar-bear64.txt"), 
-				new File("ARGONMENDIVALENCIA.txt"),
-				new File("Collectors-Choice.txt"),
-				new File("love-vinyl-records.txt"), 
-				new File("oldies-dot-com.txt"), 
-				new File("RelevantRecords.txt"), 
-				new File("Silverplatters.txt"), 
-				new File("sorrystate.txt"), 
-				new File("VEVinyl.txt"), 
-				new File("VinylExpressBV.txt")
+		seller[] sellers = {
+			//seller format: file, shippingBool, shippingCost
+			//TODO auto fetch and convert shipping costs
+			new seller(new File("green-vinyl.txt"), true, 29.60),
+			new seller(new File("polar-bear64.txt"), false, null),
+			new seller(new File("ARGONMENDIVALENCIA.txt"), false, null),
+			new seller(new File("Collectors-Choice.txt"), true, 6.8),
+			new seller(new File("love-vinyl-records.txt"), true, 23.17),
+			new seller(new File("oldies-dot-com.txt"), false, null),
+			new seller(new File("RelevantRecords.txt"), false, null), 
+			new seller(new File("Silverplatters.txt"), false, null),
+			new seller(new File("sorrystate.txt"), true, 13.63),
+			new seller(new File("VEVinyl.txt"), false, null),
+			new seller(new File("VinylExpressBV.txt"), false, null)
 		};
 		
 		//ArrayList of record objects
@@ -46,14 +48,18 @@ public class scraper {
 		//Index of records object with title currentTitle in records
 		int currentIndex = 0;
 		
+		int n = 3;	//Number of seller files to read
+					//  Only first few files for now, any more raises HTML 429: too many requests
+				 	//TODO Make program wait sometimes so as not to exceed max number of requests
+		
 		//For each file in files
-		for(int f=0; f<2; f++) {//Only first 2 files for now, any more raises HTML 429: too many requests
+		for(int f=0; f<n; f++) {
 			
 			//Output which file is currently being read from
-			System.out.println(files[f]);
+			System.out.println(sellers[f].file.getName());
 			
 			//Opening scanner on file
-			Scanner reader = new Scanner(files[f]);
+			Scanner reader = new Scanner(sellers[f].file);
 			
 			//For every line in file
 			while(reader.hasNextLine()) {
@@ -97,6 +103,11 @@ public class scraper {
 							currentIndex = records.size();
 						}
 						
+						//If seller includes shipping in price, subtract it
+						if(sellers[f].shippingBool) {
+							price = price - sellers[f].shippingCost;
+						}
+						
 						//Set the price of the item at currentIndex in records to this price
 						records.get(currentIndex).setPrice(price, f);
 						
@@ -124,7 +135,7 @@ public class scraper {
 					}catch(HttpStatusException e) {
 						//If we have done too many http requests, skip to writing stage
 						System.out.println("429 at " + url);
-						write(records, files);
+						write(records, sellers, n);
 						System.exit(0);
 					}
 					//Substring around median price
@@ -137,15 +148,10 @@ public class scraper {
 				}
 			}
 		}
-		write(records, files);
-		/*
-		//Print name and price of all records in records
-		for(record r : records) {
-			System.out.println(r.title + " price: $" + r.price + " median: $" + r.median);
-		}
-		*/
+		write(records, sellers, n);
 	}
-	public static void write(ArrayList<record> records, File[] files) throws IOException, RowsExceededException, WriteException {
+	
+	public static void write(ArrayList<record> records, seller[] sellers, int n) throws IOException, RowsExceededException, WriteException {
 		System.out.println("writing");
 		
 		//Write each record to spreadsheet
@@ -156,12 +162,12 @@ public class scraper {
 		//Add titles for columns
 		sheet.addCell(new Label(0, 0, "Title"));
 		sheet.addCell(new Label(1, 0, "Median"));
-		for(int l=0; l<2; l++) {
-			sheet.addCell(new Label(l+2, 0, files[l].getName()));
+		for(int l=0; l<n; l++) {
+			sheet.addCell(new Label(l+2, 0, sellers[l].file.getName()));
 		}
 		
 		//Add information from each record to the spreadsheet as new cells
-		for(int f=0; f<2; f++) { //Remember to update this with number of files read from
+		for(int f=0; f<n; f++) {
 			for(int x=0; x<records.size(); x++) {
 				//Titles go in column A
 				sheet.addCell(new Label(0, x+1, records.get(x).title));

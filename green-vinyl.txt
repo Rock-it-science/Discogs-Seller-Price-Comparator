@@ -2,7 +2,7 @@
         <div id="main_wrapper">                            <div id="site_headers_super_wrap">
     <div id="site_header_wrap">
         <div id="site_header" role="banner" aria-label="Discogs Header">
-                                                    <a id="header_logo" href="/my" title="Go to Discogs.com homepage">
+                                                    <a id="header_logo" href="/my">
                 <img src="https://s.discogs.com/images/discogs-white.png?5" alt="">
             </a>
             <form id="site_search" action="/search/" role="search" aria-label="Search Discogs">
@@ -217,7 +217,7 @@
                             </li>
                         </ul>
                     </li>                    <li id="messages_link">
-                        <a href="/messages/" class="nav_group_control accent needs_delegated_tooltip" data-placement="bottom" title="28 Unread Messages" aria-label="28 Unread Messages">
+                        <a href="/messages/" class="nav_group_control accent needs_delegated_tooltip" data-placement="bottom" aria-label="28 Unread Messages">
                             <i class="icon icon-envelope"></i>
                                                             <span id="unread_message_count" class="activity_menu_total">
                                     28
@@ -225,7 +225,7 @@
                                                     </a>
                     </li>
                     <li>
-                                                                        <a id="cart_link" href="/sell/cart/" class="nav_group_control  needs_delegated_tooltip" rel="tooltip" data-placement="bottom" title="0 in Cart" aria-label="0 in Cart">
+                                                                        <a id="cart_link" href="/sell/cart/" class="nav_group_control  needs_delegated_tooltip" rel="tooltip" data-placement="bottom" aria-label="0 in Cart">
                             <i class="icon icon-shopping-cart"></i>
                                                     </a>
                     </li>
@@ -443,7 +443,7 @@
         <tbody>
                                         <tr class="shortcut_navigable ">
         <td class="item_picture as_float">
-                <a href="/sell/item/846668048?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/aF9pO-dKPzthblXRq18PIia-DLk=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-8452534-1461893194-4937.jpeg.jpg" src="https://img.discogs.com/aF9pO-dKPzthblXRq18PIia-DLk=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-8452534-1461893194-4937.jpeg.jpg" alt="King Gizzard And The Lizard Wizard - Nonagon Infinity for sale"></a>
+                <a href="/sell/item/846668048?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image hoverZoomLink" data-src="https://img.discogs.com/aF9pO-dKPzthblXRq18PIia-DLk=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-8452534-1461893194-4937.jpeg.jpg" src="https://img.discogs.com/aF9pO-dKPzthblXRq18PIia-DLk=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-8452534-1461893194-4937.jpeg.jpg" alt="King Gizzard And The Lizard Wizard - Nonagon Infinity for sale"></a>
 
 
             <div class="hide_mobile community_data_text">
@@ -576,7 +576,7 @@
                     </tr>
                             <tr class="shortcut_navigable ">
         <td class="item_picture as_float">
-                <a href="/sell/item/846513563?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/GPGnWGaTUWDAZqs3QxDaPjxAlB4=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-8768615-1468363038-1253.jpeg.jpg" src="https://img.discogs.com/GPGnWGaTUWDAZqs3QxDaPjxAlB4=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-8768615-1468363038-1253.jpeg.jpg" alt="King Gizzard And The Lizard Wizard - I'm In Your Mind Fuzz for sale"></a>
+                <a href="/sell/item/846513563?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image hoverZoomLink" data-src="https://img.discogs.com/GPGnWGaTUWDAZqs3QxDaPjxAlB4=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-8768615-1468363038-1253.jpeg.jpg" src="https://img.discogs.com/GPGnWGaTUWDAZqs3QxDaPjxAlB4=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-8768615-1468363038-1253.jpeg.jpg" alt="King Gizzard And The Lizard Wizard - I'm In Your Mind Fuzz for sale"></a>
 
 
             <div class="hide_mobile community_data_text">
@@ -842,7 +842,7 @@
                     </tr>
                             <tr class="shortcut_navigable ">
         <td class="item_picture as_float">
-                <a href="/sell/item/846271363?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Massive Attack - Mezzanine for sale"></a>
+                <a href="/sell/item/846271363?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" alt="Massive Attack - Mezzanine for sale"></a>
 
 
             <div class="hide_mobile community_data_text">
@@ -975,7 +975,7 @@
                     </tr>
                             <tr class="shortcut_navigable ">
         <td class="item_picture as_float">
-                <a href="/sell/item/840586239?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Massive Attack - Mezzanine for sale"></a>
+                <a href="/sell/item/840586239?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" alt="Massive Attack - Mezzanine for sale"></a>
 
 
             <div class="hide_mobile community_data_text">
@@ -1108,7 +1108,7 @@
                     </tr>
                             <tr class="shortcut_navigable ">
         <td class="item_picture as_float">
-                <a href="/sell/item/839576532?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/oYIqzjnacOFEg056qoVtWnZLioE=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-7252111-1437477954-4032.jpeg.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Tame Impala - Currents for sale"></a>
+                <a href="/sell/item/839576532?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/oYIqzjnacOFEg056qoVtWnZLioE=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-7252111-1437477954-4032.jpeg.jpg" src="https://img.discogs.com/oYIqzjnacOFEg056qoVtWnZLioE=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-7252111-1437477954-4032.jpeg.jpg" alt="Tame Impala - Currents for sale"></a>
 
 
             <div class="hide_mobile community_data_text">
@@ -1241,7 +1241,7 @@
                     </tr>
                             <tr class="shortcut_navigable ">
         <td class="item_picture as_float">
-                <a href="/sell/item/812327628?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Massive Attack - Mezzanine for sale"></a>
+                <a href="/sell/item/812327628?ev=bp_img" class="thumbnail-lazyload"><img class="marketplace_image" data-src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" src="https://img.discogs.com/rV6Ti7ygApAPoAjYe7SXVe_jXQc=/fit-in/300x300/filters:strip_icc():format(jpeg):mode_rgb():quality(40)/discogs-images/R-10470946-1498106312-4779.jpeg.jpg" alt="Massive Attack - Mezzanine for sale"></a>
 
 
             <div class="hide_mobile community_data_text">
