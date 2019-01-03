@@ -1,5 +1,8 @@
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +28,7 @@ public class scraper {
 		//TODO Take different releases of same title into account
 		//TODO Take condition into account
 		//TODO Automatically fetch and convert shipping costs
+		//TODO Store all items from wantlist as a hash table, and append to it rather than getting all items every time
 		
 		
 		
@@ -32,6 +36,9 @@ public class scraper {
 		//  Cannot get this automatically because it requirese authentication
 		seller[] sellers = {
 			//seller format: file, shippingBool, shippingCost
+			new seller(new File("ARGONMENDIVALENCIA.txt"), false, null),
+			new seller(new File("polar-bear64.txt"), false, null),
+				
 			new seller(new File("VEVinyl.txt"), false, null),
 			new seller(new File("Collectors-Choice.txt"), true, 6.8),
 			new seller(new File("Silverplatters.txt"), false, null),
@@ -39,8 +46,8 @@ public class scraper {
 			new seller(new File("oldies-dot-com.txt"), false, null),
 			new seller(new File("green-vinyl.txt"), true, 29.60),
 			new seller(new File("love-vinyl-records.txt"), true, 23.17),
-			new seller(new File("polar-bear64.txt"), false, null),
-			new seller(new File("ARGONMENDIVALENCIA.txt"), false, null),
+			//Polar goes here
+			//Argon goes here
 			new seller(new File("sorrystate.txt"), true, 13.63),
 		};
 		
@@ -56,7 +63,7 @@ public class scraper {
 		//Index of records object with title currentTitle in records
 		int currentIndex = 0;
 		
-		int n = 10;	//Number of seller files to read
+		int n = 2;	//Number of seller files to read
 					//  Only first few files for now, any more raises HTML 429: too many requests
 				 	//TODO Make program wait sometimes so as not to exceed max number of requests
 		
@@ -179,83 +186,43 @@ public class scraper {
 	public static void write(ArrayList<record> records, seller[] sellers, int n) throws IOException, RowsExceededException, WriteException {
 		System.out.println("writing");
 		
-		//Write each record to spreadsheet
-		//Create a workbook
-		WritableWorkbook workbook = Workbook.createWorkbook(new File("output.xls"));
-		//Create a sheet
-		WritableSheet sheet = workbook.createSheet("sheet", 0);
-		
-		//Create coloured cell formats
-		WritableFont font = new WritableFont(WritableFont.ARIAL, 10);
-		
-		WritableCellFormat Greenformat = new WritableCellFormat(font);
-			Greenformat.setBackground(Colour.GREEN);
-		WritableCellFormat Redformat = new WritableCellFormat(font);
-			Redformat.setBackground(Colour.RED);
-		WritableCellFormat DarkRedformat = new WritableCellFormat(font);
-			DarkRedformat.setBackground(Colour.DARK_RED);
-		WritableCellFormat LightGreenformat = new WritableCellFormat(font);
-			LightGreenformat.setBackground(Colour.LIGHT_GREEN);
-		WritableCellFormat Yellowformat = new WritableCellFormat(font); 
-			Yellowformat.setBackground(Colour.YELLOW);
-	
-		//Add titles for columns
-		sheet.addCell(new Label(0, 0, "Title"));
-		sheet.addCell(new Label(1, 0, "Median"));
-		for(int l=0; l<n; l++) {
-			sheet.addCell(new Label(l+2, 0, sellers[l].file.getName()));
+		//Now write to file
+		//Create writer at file TABLE_DATA.txt
+		 PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(new File("TABLE_DATA.txt"))));
+		 
+		 //Format of TABLE_DATA file:
+		 //	"|" signifies columns
+		 // Line-break signifies new row
+		 // "{}" Signifies data to be used for formatting (value)
+		 
+		//Add titles for columns: release title, seller name, and median release price to file
+		writer.print("Title | Median price ");
+		for(int f=0; f<n; f++) {//For seller in sellers array
+			//Write seller name to first row
+			writer.print("| " + sellers[f].file.getName());
 		}
+		//Next row
+		writer.println("");
 		
-		//Add information from each record to the spreadsheet as new cells
-		for(int f=0; f<n; f++) {
-			for(int x=0; x<records.size(); x++) {
-				//Titles go in column A
-				sheet.addCell(new Label(0, x+1, records.get(x).title));
-				//Median prices go in column B
-				sheet.addCell(new Number(1, x+1, records.get(x).median));
-				//Prices go in column C
-				if(records.get(x).prices[f] != null) {
-					
-					//Price colouring
-					double p = records.get(x).prices[f];
-					double m = records.get(x).median;
-					
-					//Median is 0 (never sold before)
-					if(m == 0.0) {
-						sheet.addCell(new Number(f+2, x+1, p));
-					}
-					
-					//More than 25% less than median
-					if( p < (m * 0.75 ) ) {
-						sheet.addCell(new Number(f+2, x+1, p, Greenformat));
-					}
-						
-					//0-25% less than median
-					if( ( p > (m * 0.75 ) ) & (p < m) ) {
-						sheet.addCell(new Number(f+2, x+1, p, LightGreenformat));
-					}
-					
-					//Within 10% of median
-					if( ( p > (0.9*m) ) & (p < (1.1*m))) {
-						sheet.addCell(new Number(f+2, x+1, p, Yellowformat));
-					}
-							
-					//0-25% above median
-					if( ( p < (m * 1.25 ) ) & (p > m) ) {
-						sheet.addCell(new Number(f+2, x+1, p, Redformat));
-					}
-							
-					//More than 25% above median
-					if( p > (m * 1.25 ) ) {
-						sheet.addCell(new Number(f+2, x+1, p, DarkRedformat));
-					}
-					
+		//Write data row-by-row
+		for(int x=0; x<records.size(); x++) {//For record in records arrayList
+			//First cell of each row is the title of the release
+			writer.print(records.get(x).title + " |");
+			//Second cell of each row is the median price of the release
+			writer.print(records.get(x).median);
+			for(int f=0; f<n; f++) {//For seller in sellers array
+				//Print price, then value in squigly brackets
+				if(records.get(x).prices[f] != null) {//If this seller is selling this release
+					writer.print(" | $"+records.get(x).prices[f] + "{"+ (records.get(x).prices[f] / records.get(x).median) +"} ");
+				}else {//Else print blank cell
+					writer.print("|");
 				}
 			}
+			//Next row
+			writer.println("");
 		}
-		// All sheets and cells added. Now write out the workbook 
-		workbook.write();
-		workbook.close();
+		
+		writer.close();
 		
 		System.out.println("done");
 	}
