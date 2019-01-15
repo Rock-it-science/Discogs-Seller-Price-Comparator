@@ -1,2 +1,4 @@
 # Discogs-Seller-Price-Comparator
 Find what Discogs sellers are selling items from your wantlist for the cheapest. This program looks at the items for sale from given sellers from your wantlist, and outputs a spreadsheet comparing the sellers' prices with the mean prices of each release.
+
+See spreadsheet-output branch for a working (but slow) version done in Java without the Discogs API
