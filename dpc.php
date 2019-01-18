@@ -1,3 +1,12 @@
+<html><body>
+<table>
+  <tr>
+    <th>Artist</th>
+    <th>Release Title</th>
+    <th>Record info</th>
+    <th>Seller</th>
+    <th>Price</th>
+  </tr>
 <?php
 //Get installed dependancies from autoload
 require '../php/vendor/autoload.php';
@@ -15,7 +24,24 @@ $client = Discogs\ClientFactory::factory([
 $response = $client->getWantlist([
     'username' => $username
 ]);
-// Pagination data
-var_dump($response);
+// Loop through results
+foreach ($response['wants'] as $result) {
+    //New table row
+    echo "<tr>";
+    //Echo artist name
+    echo "<td>" . $result['basic_information']['artists'][0]['name'] . "</td>";
+    //Echo release title
+    echo "<td>" . $result['basic_information']['title'] . "</td>";
+    //Record info
+    echo "<td>" . $result['basic_information']['formats'][0]['name'] . " " . $result['basic_information']['formats'][0]['descriptions'][0] . " " . "</td>";
+    //Seller
+    echo "<td>" . "</td>";
+    //Price
+    echo "<td>" . "</td>";
+    //End table row
+    echo "</tr>";
+}
 
  ?>
+</table>
+</body></html>
