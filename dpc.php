@@ -33,7 +33,15 @@ foreach ($response['wants'] as $result) {
     //Echo release title
     echo "<td>" . $result['basic_information']['title'] . "</td>";
     //Record info
-    echo "<td>" . $result['basic_information']['formats'][0]['name'] . " " . $result['basic_information']['formats'][0]['descriptions'][0] . " " . "</td>";
+    echo "<td>";
+    foreach($result['basic_information']['formats'][0]['descriptions'] as $info){
+      echo $info . " ";
+    }
+    //Print more info if it exists
+    if(isset($result['basic_information']['formats'][0]['text'])){
+      echo $result['basic_information']['formats'][0]['text'];
+    }
+    echo "</td>";
     //Seller
     echo "<td>" . "</td>";
     //Price
