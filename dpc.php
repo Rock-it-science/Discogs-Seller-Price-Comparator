@@ -42,13 +42,23 @@ foreach ($response['wants'] as $result) {
       echo $result['basic_information']['formats'][0]['text'];
     }
     echo "</td>";
-    //Seller
-    echo "<td>" . "</td>";
-    //Price
+    //Get release info
+    $rId = $result['id'];
+    $release = $client->getRelease([
+    'id' => $rId;
+    ]);
+    //Median release price
+    echo "<td>" . $release['lowest_price'] . "</td>";
+    //Seller and link
     echo "<td>" . "</td>";
     //End table row
     echo "</tr>";
 }
+
+//Make a list of all items on want list
+//Get names of certain sellers that the buyer is interested in
+//Compare items to find all items that seller is selling that are on the buyer's wantlist
+//Output prices compared to median prices in table
 
  ?>
 </table>
