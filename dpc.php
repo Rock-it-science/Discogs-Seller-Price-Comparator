@@ -1,6 +1,6 @@
 <?php
 //Get installed dependancies from autoload
-require '../bin/php/php7.2.10/vendor/autoload.php';
+require '../php/vendor/autoload.php';
 
 //Getting username passed from index page
 $username = $_REQUEST["username"];
@@ -12,17 +12,10 @@ $client = Discogs\ClientFactory::factory([
   ]
 ]);
 
-$response = $client->search([
-    'q' => 'Meagashira'
+$response = $client->getWantlist([
+    'username' => $username
 ]);
-// Loop through results
-foreach ($response['results'] as $result) {
-    var_dump($result['title']);
-}
 // Pagination data
-var_dump($response['pagination']);
-
-// Dump all data
-var_dump($response->toArray());
+var_dump($response);
 
  ?>
