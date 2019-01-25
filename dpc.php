@@ -1,15 +1,7 @@
 <html><body>
-<table>
-  <tr>
-    <th>Artist</th>
-    <th>Release Title</th>
-    <th>Record info</th>
-    <th>Seller</th>
-    <th>Price</th>
-  </tr>
 <?php
 //Get installed dependancies from autoload
-require '../php/vendor/autoload.php';
+require '../vendor/autoload.php';
 
 //Getting username passed from index page
 $username = $_REQUEST["username"];
@@ -20,46 +12,65 @@ $client = Discogs\ClientFactory::factory([
       'headers' => ['User-Agent' => 'Discogs-Seller-Price-Comparator/0.0 +https://github.com/Rock-it-science/Discogs-Seller-Price-Comparator'],
   ]
 ]);
+//Throttle client
+$client->getHttpClient()->getEmitter()->attach(new Discogs\Subscriber\ThrottleSubscriber());
 
-$response = $client->getWantlist([
-    'username' => $username
+$wantResponse = $client->getWantlist([
+    'username' => $username,
+    'page' => 3, //For example releases, use this page
+    'per_page' => 250
 ]);
-// Loop through results
-foreach ($response['wants'] as $result) {
-    //New table row
-    echo "<tr>";
-    //Echo artist name
-    echo "<td>" . $result['basic_information']['artists'][0]['name'] . "</td>";
-    //Echo release title
-    echo "<td>" . $result['basic_information']['title'] . "</td>";
-    //Record info
-    echo "<td>";
-    foreach($result['basic_information']['formats'][0]['descriptions'] as $info){
-      echo $info . " ";
-    }
-    //Print more info if it exists
-    if(isset($result['basic_information']['formats'][0]['text'])){
-      echo $result['basic_information']['formats'][0]['text'];
-    }
-    echo "</td>";
-    //Get release info
-    $rId = $result['id'];
-    $release = $client->getRelease([
-    'id' => $rId;
-    ]);
-    //Median release price
-    echo "<td>" . $release['lowest_price'] . "</td>";
-    //Seller and link
-    echo "<td>" . "</td>";
-    //End table row
-    echo "</tr>";
+// Loop through results adding the ID of each one to array wantsArr
+$wantsArr = array();
+
+foreach ($wantResponse['wants'] as $result) {
+    $wantsArr[] = $result['id'];
 }
 
-//Make a list of all items on want list
+//Get median price of each release
+
 //Get names of certain sellers that the buyer is interested in
+//For now hard code 1 seller that doesn't have too many items
+$sellerArr = array('bigschoolrecords');
+
 //Compare items to find all items that seller is selling that are on the buyer's wantlist
-//Output prices compared to median prices in table
+//First get all items from seller's inventory
+$invResponse = $client->getInventory([
+  'username' => $sellerArr[0],
+  'sort' => 'item',
+  'sort_order' => 'asc',
+  'per_page' => 250, //For now, only first 50 for example
+  'page' => 1 //Example releases are on this page
+]);
+$sellItemArr = array();
+foreach($invResponse['listings'] as $item){
+  $sellItemArr[] = $item['release']['id'];
+}
+
+//Check if each item in wantsArr is being sold by the seller
+foreach($wantsArr as $wantItemID){
+  if(in_array($wantItemID, $sellItemArr)){
+    //Echo information about release from ID
+    $wantRelease = $client->getRelease([
+      'id' => $wantItemID
+    ]);
+    echo $wantRelease['artists'][0]['name'] . " - " . $wantRelease['title'] . ", ";
+  }
+}
+
+//Currently echos seller's item page and release page, which have seperate IDs
+//Need to figure out how to get release ID from seller's item page
 
  ?>
+<!--<table>
+  <tr>
+    <th>Artist</th>
+    <th>Release Title</th>
+    <th>Seller</th>
+    <th>Price</th>
+  </tr>-->
+  <?php
+  //Output prices compared to median prices in table
+   ?>
 </table>
 </body></html>
