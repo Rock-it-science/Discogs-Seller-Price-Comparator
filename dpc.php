@@ -6,11 +6,6 @@ require '../vendor/autoload.php';
 //Getting username passed from index page
 $username = $_REQUEST['username'];
 
-/*
-New method: getting all JSON data at once to avoid trying to do thousands of requests that either get throttled or blocked
-Or: Do all the requests once and save the data
-*/
-
 //Setting wantlist URL
 $wantURL = 'https://api.discogs.com/users/Rock_it_science/wants';
 //Setting seller inventory URL
@@ -25,7 +20,8 @@ $client = Discogs\ClientFactory::factory([
 //Throttle client
 $client->getHttpClient()->getEmitter()->attach(new Discogs\Subscriber\ThrottleSubscriber());
 
-//Wantlist client
+//Wantlist clients
+//Client for first page
 $wantClients = array();
 array_push($wantClients, $client->getWantlist([
     'username' => $username,
@@ -35,7 +31,7 @@ array_push($wantClients, $client->getWantlist([
 //Create a client for every page
 //Find number of pages in wantList
 $pages = $wantClients[0]['pagination']['pages'];
-if($pages>2){
+if($pages>1){
   for($p=2; $p<=$pages; $p++){//Iterate through every page
     array_push($wantClients, $client->getWantlist([
         'username' => $username,
@@ -44,15 +40,6 @@ if($pages>2){
     ]));
   }
 }
-
-//Seller inventory client
-/*$invResponse = $client->getInventory([
-  'username' => $sellerArr[0],
-  'sort' => 'item',
-  'sort_order' => 'asc',
-  'per_page' => 250, //For now, only first 50 for example
-  'page' => 1 //Example releases are on this page
-]);*/
 
 // Array of release IDs from every item in wantlist
 $wantArray = array();
@@ -70,46 +57,30 @@ for($p=0; $p<sizeof($wantClients); $p++){//Iterate through every client (page)
     //Add to wantArray
     array_push($wantArray, $item['id']);
     //Display artist and name in table
-    echo '<tr><td>' . $item['basic_information']['artists'][0]['name'] .'</td><td>' . $item['basic_information']['title'] . '</td><td>' . $item['id']. '</td></tr>';
+    //echo '<tr><td>' . $item['basic_information']['artists'][0]['name'] .'</td><td>' . $item['basic_information']['title'] . '</td><td>' . $item['id']. '</td></tr>';
+  }
+}
+//Seller inventory client
+$sellClient = $client->getInventory([
+  'username' => 'discoclubmate', //Example seller name
+  'sort' => 'item',
+  'sort_order' => 'asc',
+  'per_page' => 250, //For now, only first 50 for example
+  'page' => 1 //Example releases are on this page
+]);
+
+//Array of items for sale by seller (for now only items from first page)
+$sellWant = array();
+foreach($sellClient['listings'] as &$forSale){//Iterate through items for sale on this page
+  if(in_array($forSale['release']['id'], $wantArray)){//Check if for-sale item is in want-array
+    //Add to sellwant array
+    array_push($sellWant, $forSale['release']['id']);
+    //Show in table
+    echo '<tr><td>' . $forSale['release']['artist'] .'</td><td>' . $forSale['release']['title'] . '</td><td>' . $forSale['id']. '</td></tr>';
   }
 }
 
-//ricbra API only method (429 error), have to iterate through every page
-/*
-// Loop through results adding the ID of each one to array wantsArr
-$wantsArr = array();
 
-foreach ($wantResponse['wants'] as $result) {
-    $wantsArr[] = $result['id'];
-}
-
-//Get median price of each release
-
-//Get names of certain sellers that the buyer is interested in
-//For now hard code 1 seller that doesn't have too many items
-$sellerArr = array('bigschoolrecords');
-
-//Compare items to find all items that seller is selling that are on the buyer's wantlist
-
-$sellItemArr = array();
-foreach($invResponse['listings'] as $item){
-  $sellItemArr[] = $item['release']['id'];
-}
-
-//Check if each item in wantsArr is being sold by the seller
-foreach($wantsArr as $wantItemID){
-  if(in_array($wantItemID, $sellItemArr)){
-    //Echo information about release from ID
-    $wantRelease = $client->getRelease([
-      'id' => $wantItemID
-    ]);
-    echo $wantRelease['artists'][0]['name'] . " - " . $wantRelease['title'] . ", ";
-  }
-}
-
-//Currently echos seller's item page and release page, which have seperate IDs
-//Need to figure out how to get release ID from seller's item page
-*/
 ?>
 </table>
 </body></html>
