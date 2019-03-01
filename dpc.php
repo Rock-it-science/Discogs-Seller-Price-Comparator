@@ -54,28 +54,23 @@ if($pages>2){
   'page' => 1 //Example releases are on this page
 ]);*/
 
+// Array of release IDs from every item in wantlist
 $wantArray = array();
 ?>
 <table>
  <tr>
    <th>Artist</th>
    <th>Title</th>
+   <th>Release ID</th>
  </tr>
  <?php
 
 for($p=0; $p<sizeof($wantClients); $p++){//Iterate through every client (page)
   foreach($wantClients[$p]['wants'] as &$item){//Iterating through items on page
-    //Create array of title and artist
-    $current = array();
-    array_push($current, $item['basic_information']['artists'][0]['name']);
-    array_push($current, $item['basic_information']['title']);
-    //Check if it is already in array
-    if(!in_array($current, $wantArray)){//If not already in array:
-      //Add to wantArray
-      array_push($wantArray, $current);
-      //Display artist and name in table
-      echo '<tr><td>' . $item['basic_information']['artists'][0]['name'] .'</td><td>' . $item['basic_information']['title'] . '</td></tr>';
-    }
+    //Add to wantArray
+    array_push($wantArray, $item['id']);
+    //Display artist and name in table
+    echo '<tr><td>' . $item['basic_information']['artists'][0]['name'] .'</td><td>' . $item['basic_information']['title'] . '</td><td>' . $item['id']. '</td></tr>';
   }
 }
 
