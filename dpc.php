@@ -39,7 +39,7 @@ if($pages>2){
   for($p=2; $p<=$pages; $p++){//Iterate through every page
     array_push($wantClients, $client->getWantlist([
         'username' => $username,
-        'page' => $p, //For example releases, use this page
+        'page' => $p,
         'per_page' => 250
     ]));
   }
@@ -59,15 +59,23 @@ $wantArray = array();
 <table>
  <tr>
    <th>Artist</th>
-   <th>Release Title</th>
-   <th>Seller</th>
-   <th>Price</th>
+   <th>Title</th>
  </tr>
  <?php
 
 for($p=0; $p<sizeof($wantClients); $p++){//Iterate through every client (page)
   foreach($wantClients[$p]['wants'] as &$item){//Iterating through items on page
-    echo '<tr><td></td><td>' . $item['basic_information']['title'] . '</td><td></td><td></td></tr>';
+    //Create array of title and artist
+    $current = array();
+    array_push($current, $item['basic_information']['artists'][0]['name']);
+    array_push($current, $item['basic_information']['title']);
+    //Check if it is already in array
+    if(!in_array($current, $wantArray)){//If not already in array:
+      //Add to wantArray
+      array_push($wantArray, $current);
+      //Display artist and name in table
+      echo '<tr><td>' . $item['basic_information']['artists'][0]['name'] .'</td><td>' . $item['basic_information']['title'] . '</td></tr>';
+    }
   }
 }
 
