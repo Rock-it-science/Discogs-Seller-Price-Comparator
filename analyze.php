@@ -1,5 +1,5 @@
 <?php
-require '../vendor/autoload.php';
+require '../php/vendor/autoload.php';
 //Passing seller name
 $seller = $_REQUEST["seller"];
 
@@ -59,7 +59,7 @@ if($checkTableQuery == FALSE){//Table does not exist
     }
   }
   echo 'done';
-  header('location: dpc.php');
+  header('location: index.html');
 }else{
   echo 'Table already exists';
   header('location: index.html');

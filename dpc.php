@@ -1,6 +1,9 @@
 <html><body>
 <?php
-
+//Get installed dependancies from autoload
+require '../php/vendor/autoload.php';
+//Getting username passed from index page
+$username = $_REQUEST['username'];
 /*
 What I want this program to do: Given a username and some sellers, find who is selling the most items
   on your wantlist for the lowest prices.
@@ -23,22 +26,16 @@ How to find items from a seller's inventory that are also in your wantlist:
    - Button to analyze sellers, permanently store data of what they are selling
 */
 
-//Get installed dependancies from autoload
-require '../vendor/autoload.php';
-
 //Setting infinite execution time
 ini_set('max_execution_time', 0);
-
-//Getting username passed from index page
-$username = $_REQUEST['username'];
 
 //Get sellers from SQL tables
 $sellers = array();
 $servername = "localhost";
-$username = "root";
+$serverUsername = "root";
 $password = "";
 $dbname = "discogs";
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($servername, $serverUsername, $password, $dbname);
 if($conn->connect_error){
   die("Connection failed: ". $conn->connect_error);
 }
@@ -62,7 +59,7 @@ $wantClients = array();
 array_push($wantClients, $client->getWantlist([
     'username' => $username,
     'page' => 1, //For example releases, use this page
-    'per_page' => 250
+    'per_page' => 100
 ]));
 //Create a client for every page
 //Find number of pages in wantList
@@ -72,27 +69,16 @@ if($pages>1){
     array_push($wantClients, $client->getWantlist([
         'username' => $username,
         'page' => $p,
-        'per_page' => 250
+        'per_page' => 100
     ]));
   }
 }
-
-// Array of release IDs from every item in wantlist
-$wantArray = array();
-/*?>
-<table>
- <tr>
-   <th>Artist</th>
-   <th>Title</th>
-   <th>Release ID</th>
- </tr>
- <?php*/
 
 foreach($wantClients as &$wantPage){//Iterate through every client (page)
   foreach($wantPage['wants'] as &$item){//Iterating through items on page
     //Search in sellers tables for each item
     $itemQuery = $conn->query('SELECT 1 FROM '.$sellers[0]['Tables_in_discogs'].' WHERE recordID='.$item['id'].';');
-    if($itemQuery != null){
+    if(mysqli_num_rows($itemQuery) > 0){
       echo $item['basic_information']['title'] . ' ' . $item['basic_information']['artists'][0]['name'] .', ';
     }
   }
