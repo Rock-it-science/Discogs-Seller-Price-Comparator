@@ -42,7 +42,7 @@ if($checkTableQuery == FALSE){//Table does not exist
   //First find number of pages in inventory
   $sellPages = $sellClients[0]['pagination']['pages'];
   if($sellPages>1){
-    for($p=2; $p<=5; $p++){//Iterate through every page **Set max to 20 for testing**
+    for($p=2; $p<=5; $p++){//Iterate through every page **Set max to 5 for testing**
       array_push($sellClients, $client->getInventory([
           'username' => $seller,
           'sort' => 'item',

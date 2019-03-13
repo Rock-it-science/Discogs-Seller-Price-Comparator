@@ -32,8 +32,20 @@ ini_set('max_execution_time', 0);
 //Getting username passed from index page
 $username = $_REQUEST['username'];
 
-//Array of sellers
-$sellers = array('Silverplatters');//TODO Add more later
+//Get sellers from SQL tables
+$sellers = array();
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "discogs";
+$conn = new mysqli($servername, $username, $password, $dbname);
+if($conn->connect_error){
+  die("Connection failed: ". $conn->connect_error);
+}
+$sellersQuery = $conn->query('SHOW TABLES;');
+if($row = $sellersQuery->fetch_assoc()){
+  array_push($sellers, $row);
+}
 
 //Setting up client with my user agent
 $client = Discogs\ClientFactory::factory([
@@ -78,54 +90,13 @@ $wantArray = array();
 
 foreach($wantClients as &$wantPage){//Iterate through every client (page)
   foreach($wantPage['wants'] as &$item){//Iterating through items on page
-    //Add to wantArray
-    array_push($wantArray, $item['id']);
-    //Display artist and name in table
-    //echo '<tr><td>' . $item['basic_information']['artists'][0]['name'] .'</td><td>' . $item['basic_information']['title'] . '</td><td>' . $item['id']. '</td></tr>';
+    //Search in sellers tables for each item
+    $itemQuery = $conn->query('SELECT 1 FROM '.$sellers[0]['Tables_in_discogs'].' WHERE recordID='.$item['id'].';');
+    if($itemQuery != null){
+      echo $item['basic_information']['title'] . ' ' . $item['basic_information']['artists'][0]['name'] .', ';
+    }
   }
 }
-//Array of seller clients
-$sellClients = array();
-//Seller inventory client
-$sellClients[0] = $client->getInventory([
-  'username' => 'UNDERGROUNDSOUNDSMI', //Example seller name
-  'sort' => 'item',
-  'sort_order' => 'asc',
-  'per_page' => 100,
-  'page' => 1
-]);
-//Create a client for every page
-//Find number of pages in inventory
-$sellPages = $sellClients[0]['pagination']['pages'];
-if($sellPages>1){
-  for($p=2; $p<=20; $p++){//Iterate through every page **Set max to 20 for testing**
-    array_push($sellClients, $client->getInventory([
-        'username' => 'UNDERGROUNDSOUNDSMI',
-        'sort' => 'item',
-        'sort_order' => 'asc',
-        'per_page' => 100,
-        'page' => $p,
-    ]));
-  }
-}
-
-//Array of items for sale by seller
-$sellArray = array();
-foreach($sellClients as &$sellPage){
-  foreach($sellPage['listings'] as &$forSale){//Iterate through items for sale on this page
-    //Add to sellArray
-    array_push($sellArray, $forSale['id']);
-  }
-}
-echo 'want items:';
-print_r($wantArray);
-echo 'seller items: ';
-print_r($sellArray);
-echo 'Items in both: ';
-
-//Now search for items in both wantArray and sellArray
-$both = array_intersect($sellArray, $wantArray);
-print_r($both);
 
 ?>
 </table>
