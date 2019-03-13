@@ -98,7 +98,7 @@ $sellClients[0] = $client->getInventory([
 //Find number of pages in inventory
 $sellPages = $sellClients[0]['pagination']['pages'];
 if($sellPages>1){
-  for($p=2; $p<=20; $p++){//Iterate through every page
+  for($p=2; $p<=20; $p++){//Iterate through every page **Set max to 20 for testing**
     array_push($sellClients, $client->getInventory([
         'username' => 'UNDERGROUNDSOUNDSMI',
         'sort' => 'item',
@@ -109,7 +109,7 @@ if($sellPages>1){
   }
 }
 
-//Array of items for sale by seller (for now only items from first page)
+//Array of items for sale by seller
 $sellArray = array();
 foreach($sellClients as &$sellPage){
   foreach($sellPage['listings'] as &$forSale){//Iterate through items for sale on this page

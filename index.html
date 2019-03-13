@@ -3,17 +3,21 @@
   <style>
     .center-div{
       margin: 0 auto;
-      width: 100px;
+      width: 250px;
     }
   </style>
   <h1>Discogs Price Comperator</h1>
-  <br />
-  <h2>See who is selling items you want for the cheapest!</h2>
+  <h2>Analyze some seller's items, then see who is selling the most items you want for the cheapest!</h2>
 </head>
 <body>
+  <br>
   <div class='center-div'>
+    <form action="analyze.php">
+      <h3>Analyze seller: </h3>
+      <input type="text" name="seller"/>
+    </form>
     <form action="dpc.php">
-      <h3>Username: </h3>
+      <h3>Check in wantlist for user: </h3>
       <input type="text" name="username" />
     </form>
   </div>
