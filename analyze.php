@@ -42,7 +42,7 @@ if($checkTableQuery == FALSE){//Table does not exist
   //First find number of pages in inventory
   $sellPages = $sellClients[0]['pagination']['pages'];
   if($sellPages>1){
-    for($p=2; $p<=5; $p++){//Iterate through every page **Set max to 5 for testing**
+    for($p=2; $p<=$sellPages; $p++){//Iterate through every page **Set max to 5 for testing**
       array_push($sellClients, $client->getInventory([
           'username' => $seller,
           'sort' => 'item',
@@ -55,7 +55,7 @@ if($checkTableQuery == FALSE){//Table does not exist
   foreach($sellClients as &$sellPage){
     foreach($sellPage['listings'] as &$forSale){//Iterate through items for sale on this page
       //Add to seller table
-      $conn->query('INSERT INTO '.$seller.' VALUES ('.$forSale['id'].');');
+      $conn->query('INSERT INTO '.$seller.' VALUES ('.$forSale['release']['id'].');');
     }
   }
   echo 'done';

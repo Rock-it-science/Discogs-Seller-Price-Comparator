@@ -77,7 +77,7 @@ if($pages>1){
 foreach($wantClients as &$wantPage){//Iterate through every client (page)
   foreach($wantPage['wants'] as &$item){//Iterating through items on page
     //Search in sellers tables for each item
-    $itemQuery = $conn->query('SELECT 1 FROM '.$sellers[0]['Tables_in_discogs'].' WHERE recordID='.$item['id'].';');
+    $itemQuery = $conn->query('SELECT * FROM TdE57 WHERE recordID='.$item['id'].';');
     if(mysqli_num_rows($itemQuery) > 0){
       echo $item['basic_information']['title'] . ' ' . $item['basic_information']['artists'][0]['name'] .', ';
     }
