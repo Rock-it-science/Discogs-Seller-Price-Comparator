@@ -1,4 +1,5 @@
 <html>
+<meta charset="utf-8"/>
 <head>
   <style>
     .center-div{
@@ -12,13 +13,16 @@
 <body>
   <br>
   <div class='center-div'>
-    <form action="analyze.php">
-      <h3>Analyze seller: </h3>
+    <form action="seller.php">
+      <h3>Download seller inventory: </h3>
       <input type="text" name="seller">
     </form>
-    <form action="dpc.php" method="post">
-      <h3>Check in wantlist for user: </h3>
+    <form action="wantlist.php" method="post">
+      <h3>Download wantlist from user: </h3>
       <input type="text" name="username">
+    </form>
+    <form action="dpc.php">
+      <input type="submit" text="analyze">
     </form>
   </div>
 </body>

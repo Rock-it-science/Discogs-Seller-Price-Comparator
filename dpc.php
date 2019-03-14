@@ -1,9 +1,6 @@
-<html><body>
 <?php
 //Get installed dependancies from autoload
-require '../php/vendor/autoload.php';
-//Getting username passed from index page
-$username = $_REQUEST['username'];
+require '../vendor/autoload.php';
 /*
 What I want this program to do: Given a username and some sellers, find who is selling the most items
   on your wantlist for the lowest prices.
@@ -53,37 +50,19 @@ $client = Discogs\ClientFactory::factory([
 //Throttle client
 $client->getHttpClient()->getEmitter()->attach(new Discogs\Subscriber\ThrottleSubscriber());
 
-//Wantlist clients
-//Client for first page
-$wantClients = array();
-array_push($wantClients, $client->getWantlist([
-    'username' => $username,
-    'page' => 1, //For example releases, use this page
-    'per_page' => 100
-]));
-//Create a client for every page
-//Find number of pages in wantList
-$pages = $wantClients[0]['pagination']['pages'];
-if($pages>1){
-  for($p=2; $p<=$pages; $p++){//Iterate through every page
-    array_push($wantClients, $client->getWantlist([
-        'username' => $username,
-        'page' => $p,
-        'per_page' => 100
-    ]));
-  }
+//Load all wantlist items into array
+$wantlist = array();
+$wantQuery = $conn->query('SELECT * FROM Rock_it_science');//TODO make this not hard-coded
+while($row = $wantQuery->fetch_assoc()){
+  array_push($wantlist, $row['recordID']);
 }
 
-foreach($wantClients as &$wantPage){//Iterate through every client (page)
-  foreach($wantPage['wants'] as &$item){//Iterating through items on page
-    //Search in sellers tables for each item
-    $itemQuery = $conn->query('SELECT * FROM TdE57 WHERE recordID='.$item['id'].';');
-    if(mysqli_num_rows($itemQuery) > 0){
-      echo $item['basic_information']['title'] . ' ' . $item['basic_information']['artists'][0]['name'] .', ';
-    }
+foreach($wantlist as &$item){//Iterate through all items in wantlist
+  //Search in sellers tables for each item
+  $itemQuery = $conn->query('SELECT * FROM sweet_baby_angel WHERE recordID='.$item.';');//TODO make this also not hard-coded
+  if(mysqli_num_rows($itemQuery) > 0){
+    echo $item .', ';
   }
 }
 
 ?>
-</table>
-</body></html>

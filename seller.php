@@ -1,5 +1,5 @@
 <?php
-require '../php/vendor/autoload.php';
+require '../vendor/autoload.php';
 //Passing seller name
 $seller = $_REQUEST["seller"];
 
@@ -15,7 +15,7 @@ if($conn->connect_error){
 
 //Check if table with seller's name already exists
 $checkTableQuery = $conn->query('SELECT 1 FROM '.$seller.';');
-if($checkTableQuery == FALSE){//Table does not exist
+if(!$checkTableQuery){//Table does not exist
   //Creating table for seller
   $conn->query('CREATE TABLE '.$seller.'(recordID INTEGER PRIMARY KEY)');
 
