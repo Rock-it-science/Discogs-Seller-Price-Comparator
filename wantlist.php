@@ -20,7 +20,7 @@ if($conn->connect_error){
 $checkTableQuery = $conn->query('SELECT 1 FROM '.$user.';');
 if(!$checkTableQuery){//Table does not exist
   //Creating table for seller
-  $conn->query('CREATE TABLE '.$user.'(recordID INTEGER PRIMARY KEY)');
+  $conn->query('CREATE TABLE '.'username_'.$user.'(recordID INTEGER PRIMARY KEY)');
 
   //Setting up Discogs Client
   $client = Discogs\ClientFactory::factory([
@@ -54,7 +54,7 @@ if(!$checkTableQuery){//Table does not exist
   foreach($wantClients as &$wantPage){
     foreach($wantPage['wants'] as &$item){//Iterate through items for sale on this page
       //Add to seller table
-      $conn->query('INSERT INTO '.$user.' VALUES ('.$item['id'].');');
+      $conn->query('INSERT INTO '.'username_'.$user.' VALUES ('.$item['id'].');');
     }
   }
   echo 'done';

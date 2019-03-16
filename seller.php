@@ -1,5 +1,8 @@
 <?php
 require '../vendor/autoload.php';
+
+ini_set('max_execution_time', 0);
+
 //Passing seller name
 $seller = $_REQUEST["seller"];
 
@@ -17,7 +20,7 @@ if($conn->connect_error){
 $checkTableQuery = $conn->query('SELECT 1 FROM '.$seller.';');
 if(!$checkTableQuery){//Table does not exist
   //Creating table for seller
-  $conn->query('CREATE TABLE '.$seller.'(recordID INTEGER PRIMARY KEY)');
+  $conn->query('CREATE TABLE '.'seller_'.$seller.'(recordID INTEGER PRIMARY KEY)');
 
   //Setting up Discogs Client
   $client = Discogs\ClientFactory::factory([
@@ -55,7 +58,7 @@ if(!$checkTableQuery){//Table does not exist
   foreach($sellClients as &$sellPage){
     foreach($sellPage['listings'] as &$forSale){//Iterate through items for sale on this page
       //Add to seller table
-      $conn->query('INSERT INTO '.$seller.' VALUES ('.$forSale['release']['id'].');');
+      $conn->query('INSERT INTO '.'seller_'.$seller.' VALUES ('.$forSale['release']['id'].');');
     }
   }
   echo 'done';

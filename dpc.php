@@ -29,16 +29,29 @@ $client = Discogs\ClientFactory::factory([
 //Throttle client
 $client->getHttpClient()->getEmitter()->attach(new Discogs\Subscriber\ThrottleSubscriber());
 
+//Find name of user table
+$userQuery = $conn->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.tables WHERE TABLE_NAME LIKE 'username_%';");
+while($row = $userQuery->fetch_assoc()){
+  $username = $row['TABLE_NAME'];
+}
+
+//Find names of seller tables
+$sellerNamesQuery = $conn->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.tables WHERE TABLE_NAME LIKE 'seller_%'");
+$sellerNames = array();
+while($row = $sellerNamesQuery->fetch_assoc()){
+  array_push($sellerNames, $row['TABLE_NAME']);
+}
+
 //Load all wantlist items into array
 $wantlist = array();
-$wantQuery = $conn->query('SELECT * FROM Rock_it_science');//TODO make this not hard-coded
+$wantQuery = $conn->query('SELECT * FROM '.$username);
 while($row = $wantQuery->fetch_assoc()){
   array_push($wantlist, $row['recordID']);
 }
 
 foreach($wantlist as &$item){//Iterate through all items in wantlist
   //Search in sellers tables for each item
-  $itemQuery = $conn->query('SELECT * FROM sweet_baby_angel WHERE recordID='.$item.';');//TODO make this also not hard-coded
+  $itemQuery = $conn->query('SELECT * FROM '.$sellerNames[0].' WHERE recordID='.$item.';');//TODO iterate through all sellers
   if(mysqli_num_rows($itemQuery) > 0){//Item match is found
     //Lookup item from releaseId to get title and artist
     $release = $client->getRelease([
