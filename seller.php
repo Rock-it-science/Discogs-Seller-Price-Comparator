@@ -45,14 +45,24 @@ if(!$checkTableQuery){//Table does not exist
   //First find number of pages in inventory
   $sellPages = $sellClients[0]['pagination']['pages'];
   if($sellPages>1){
-    for($p=2; $p<=$sellPages; $p++){//Iterate through every page **Set max to 5 for testing**
-      array_push($sellClients, $client->getInventory([
-          'username' => $seller,
-          'sort' => 'item',
-          'sort_order' => 'asc',
-          'per_page' => 100,
-          'page' => $p,
-      ]));
+    for($p=2; $p<=$sellPages; $p++){//Iterate through every page
+      //Every 24 pages (2400 items) take a 15-second break to avoid 429 exception
+      if($p%25==0){
+        sleep(15);
+      }
+      try{
+        array_push($sellClients, $client->getInventory([
+            'username' => $seller,
+            'sort' => 'item',
+            'sort_order' => 'asc',
+            'per_page' => 100,
+            'page' => $p,
+        ]));
+      }
+      catch(Exception $e){
+        echo '429';
+        //Could attempt to keep requesting after the exception, but there's a good chance I'll get banned
+      }
     }
   }
   foreach($sellClients as &$sellPage){
