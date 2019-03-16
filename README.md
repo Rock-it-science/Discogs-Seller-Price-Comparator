@@ -10,7 +10,7 @@ What it does now:
 
 Future Plans/ideas:
 - Allow for sellers with bigger inventories (handle 429)
-- Allow for entering more than one seller, and compare prices between sellers
+- Allow for comparing prices between sellers
 - Enter a specific list of items in addition to wantlist
   - List contains higher priority items from wantlist
     - Get items from high-priority list and find sellers selling those, but then check which of those sellers is also selling the most items from the wantlist

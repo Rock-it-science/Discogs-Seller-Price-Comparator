@@ -50,14 +50,16 @@ while($row = $wantQuery->fetch_assoc()){
 }
 
 foreach($wantlist as &$item){//Iterate through all items in wantlist
-  //Search in sellers tables for each item
-  $itemQuery = $conn->query('SELECT * FROM '.$sellerNames[0].' WHERE recordID='.$item.';');//TODO iterate through all sellers
-  if(mysqli_num_rows($itemQuery) > 0){//Item match is found
-    //Lookup item from releaseId to get title and artist
-    $release = $client->getRelease([
-      'id' => $item
-    ]);
-    echo $release['artists_sort'] . ' - ' . $release['title'] . ', ';
+  foreach($sellerNames as &$seller){//Iterate through all sellers in sellerNames
+    //Search in sellers tables for each item
+    $itemQuery = $conn->query('SELECT * FROM '.$seller.' WHERE recordID='.$item.';');//TODO iterate through all sellers
+    if(mysqli_num_rows($itemQuery) > 0){//Item match is found
+      //Lookup item from releaseId to get title and artist
+      $release = $client->getRelease([
+        'id' => $item
+      ]);
+      echo $release['artists_sort'] . ' - ' . $release['title'] . ', ';
+    }
   }
 }
 
