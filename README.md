@@ -5,10 +5,12 @@ See spreadsheet-output branch for a working (but slow) version done in Java with
 
 What it does now:
 - Enter username: Downloads record IDs of all items on wantlist from that user
-- Enter seller: Downloads record IDs of all items for sale by that user
+- Enter seller: Downloads record IDs of all items for sale by that seller
 - Analyze: Finds items that are in both the user's wantlist, and for sale by the seller
 
 Future Plans/ideas:
+- Make a loading bar that shows progress when downloading data
+- Find median price of each release
 - Allow for sellers with bigger inventories (handle 429)
 - Allow for comparing prices between sellers
 - Enter a specific list of items in addition to wantlist

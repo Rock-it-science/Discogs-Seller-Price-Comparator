@@ -1,3 +1,6 @@
+<html>
+<body>
+  <p id='status'></p>
 <?php
 require '../vendor/autoload.php';
 
@@ -17,10 +20,10 @@ if($conn->connect_error){
 }
 
 //Check if table with seller's name already exists
-$checkTableQuery = $conn->query('SELECT 1 FROM '.$seller.';');
+$checkTableQuery = $conn->query('SHOW TABLES LIKE '.$seller.';');
 if(!$checkTableQuery){//Table does not exist
   //Creating table for seller
-  $conn->query('CREATE TABLE '.'seller_'.$seller.'(recordID INTEGER PRIMARY KEY)');
+  $conn->query('CREATE TABLE '.'seller_'.$seller.'(recordID INTEGER PRIMARY KEY, price DOUBLE)');
 
   //Setting up Discogs Client
   $client = Discogs\ClientFactory::factory([
@@ -43,9 +46,13 @@ if(!$checkTableQuery){//Table does not exist
   ]);
   //Create a client for every page
   //First find number of pages in inventory
+  $pageCounter = 0;
   $sellPages = $sellClients[0]['pagination']['pages'];
   if($sellPages>1){
     for($p=2; $p<=$sellPages; $p++){//Iterate through every page
+      echo '<script>document.getElementById("status").innerHTML = "analyzing page ' . $pageCounter . ' of ' . $sellPages .'"</script>';
+      $pageCounter++;
+      flush();
       //Every 24 pages (2400 items) take a 15-second break to avoid 429 exception
       if($p%25==0){
         sleep(15);
@@ -65,17 +72,23 @@ if(!$checkTableQuery){//Table does not exist
       }
     }
   }
+  $count = 0;
+  $numItems = $sellClients[0]['pagination']['items'];
   foreach($sellClients as &$sellPage){
     foreach($sellPage['listings'] as &$forSale){//Iterate through items for sale on this page
+      //Progress
+      echo '<script>document.getElementById("status").innerHTML = "done ' . $count . ' of ' . $numItems .'"</script>';
+      $count++;
+      flush();
       //Add to seller table
-      $conn->query('INSERT INTO '.'seller_'.$seller.' VALUES ('.$forSale['release']['id'].');');
+      $conn->query('INSERT INTO '.'seller_'.$seller.' VALUES ('.$forSale['release']['id'].', '.$forSale['price']['value'].');');
     }
   }
   echo 'done';
-  header('location: index.html');
 }else{
   echo 'Table already exists';
-  header('location: index.html');
 }
-
+echo "<br><a href='index.html'>Return to index</a>";
  ?>
+</body>
+</html>

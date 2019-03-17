@@ -1,3 +1,14 @@
+<html>
+<body>
+<table>
+  <tr>
+    <th>Artist</th>
+    <th>Title</th>
+    <th>Seller</th>
+    <th>Price</th>
+    <th>Median Price</th>
+    <th>Condition</th>
+  </tr>
 <?php
 //Get installed dependancies from autoload
 require '../vendor/autoload.php';
@@ -58,9 +69,23 @@ foreach($wantlist as &$item){//Iterate through all items in wantlist
       $release = $client->getRelease([
         'id' => $item
       ]);
-      echo $release['artists_sort'] . ' - ' . $release['title'] . ', ';
+      //Get price of item from query
+      while($row = $itemQuery->fetch_assoc()){$itemPrice = $row['price'];}
+      //Get just seller's name (cut of seller_)
+      $sellerCut = substr($seller,7);
+      echo '<tr>
+              <td>'.$release['artists_sort'].'</td>
+              <td>'.$release['title'].'</td>
+              <td>'.$sellerCut.'</td>
+              <td>'.$itemPrice.'</td>
+              <td></td>
+              <td></td>
+            </tr>';
     }
   }
 }
 
 ?>
+</table>
+</body>
+</html>
