@@ -1,5 +1,6 @@
 <html>
 <body>
+  <p id='status'></p>
 <table>
   <tr>
     <th>Artist</th>
@@ -66,12 +67,21 @@ while($row = $wantQuery->fetch_assoc()){
 foreach($wantlist as &$item){//Iterate through all items in wantlist
   foreach($sellerNames as &$seller){//Iterate through all sellers in sellerNames
     //Search in sellers tables for each item
-    $itemQuery = $conn->query('SELECT * FROM '.$seller.' WHERE recordID='.$item.';');//TODO iterate through all sellers
+    $itemQuery = $conn->query('SELECT * FROM '.$seller.' WHERE recordID='.$item.';');
     if(mysqli_num_rows($itemQuery) > 0){//Item match is found
-      //Lookup item from releaseId to get title and artist
-      $release = $client->getRelease([
-        'id' => $item
-      ]);
+      try{
+        //Lookup item from releaseId to get title and artist
+        $release = $client->getRelease([
+          'id' => $item
+        ]);
+      }
+      catch(Exception $e){//429 exception
+        echo '<script>document.getElementById("status").innerHTML = "429, sleeping for 30 seconds"</script>';
+        sleep(1);//Allow one second for last line to actually make it to the buffer
+        flush();
+        sleep(29);
+      }
+
       //Get artist and title
       $artistName = $release['artists_sort'];
       $releaseTitle = $release['title'];

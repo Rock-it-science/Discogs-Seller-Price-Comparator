@@ -49,16 +49,10 @@ if(!$checkTableQuery){//Table does not exist
   $pageCounter = 0;
   $sellPages = $sellClients[0]['pagination']['pages'];
   if($sellPages>1){
-    for($p=2; $p<=$sellPages; $p++){//Iterate through every page
+    for($p=2; $p<$sellPages; $p++){//Iterate through every page
       echo '<script>document.getElementById("status").innerHTML = "analyzing page ' . $pageCounter . ' of ' . $sellPages .'"</script>';
       $pageCounter++;
-      flush();
-      //Every 24 pages (2400 items) take a 15-second break to avoid 429 exception
-      if($p%25==0){
-        echo '<script>document.getElementById("status").innerHTML = "Sleeping"</script>';
-        flush();
-        sleep(15);
-      }
+      flush();//idk why but this never really works ¯\_(ツ)_/¯
       try{
         array_push($sellClients, $client->getInventory([
             'username' => $seller,
@@ -68,10 +62,11 @@ if(!$checkTableQuery){//Table does not exist
             'page' => $p,
         ]));
       }
-      catch(Exception $e){
-        echo '429';
-        break;
-        //Could attempt to keep requesting after the exception, but there's a good chance I'll get banned
+      catch(Exception $e){//429 exception (hopefully i don't get any other exceptions caught in here lol)
+        echo '<script>document.getElementById("status").innerHTML = "429, sleeping for 30 seconds"</script>';
+        sleep(1);//Allow one second for last line to actually make it to the buffer
+        flush();
+        sleep(29);
       }
     }
   }
