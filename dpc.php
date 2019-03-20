@@ -5,6 +5,7 @@
   <tr>
     <th>Artist</th>
     <th>Title</th>
+    <th>Release Info</th>
     <th>Seller</th>
     <th>Price</th>
     <th>Median Price</th>
@@ -90,17 +91,22 @@ foreach($wantlist as &$item){//Iterate through all items in wantlist
       //Get just seller's name (cut of seller_)
       $sellerCut = substr($seller,7);
 
+      //Get release info
+      $releaseInfo = '';
+      foreach($release['formats'][0]['descriptions'] as &$info){
+        $releaseInfo .= $info;
+        $releaseInfo .= '  ';
+      }
+
       //Scrape release page for median price since its not included in the pagination for some reason
       //First we need to form the url which follows this template: https://www.discogs.com/artist-release/release/releaseID
-      $artistDashes = str_replace(" ", "-", $release['artists_sort']);
-      $titleDashes = str_replace(" ", "-", $release['title']);
-      $url = 'https://www.discogs.com/'.$artistDashes.'-'.$titleDashes.'/release/'.$item;
+      $url = $release['uri'];
       $html = file_get_html($url);
       //The median price is in an li element and contains text 'Median'
       foreach($html->find('li') as $element){
         if(strpos($element, 'Median')){
           //Extract price from element
-          $medianPrice = floatval(substr($element, (strpos($element, '$')+1)));
+          $medianPrice = floatval(substr($element, (strpos($element, '$')+1)))*0.75; //*0.75 is for converting to USD from CAD TODO make this dynamic, or just get it in USD to start with
         }
       }
 
@@ -117,6 +123,7 @@ foreach($wantlist as &$item){//Iterate through all items in wantlist
       echo '<tr>
               <td>'.$artistName.'</td>
               <td>'.$releaseTitle.'</td>
+              <td>'.$releaseInfo.'</td>
               <td>'.$sellerCut.'</td>
               <td>'.$itemPrice.'</td>
               <td>'.$medianPrice.'</td>
@@ -126,7 +133,8 @@ foreach($wantlist as &$item){//Iterate through all items in wantlist
     }
   }
 }
-
+//Set status element back to blank
+echo '<script>document.getElementById("status").innerHTML = ""</script>';
 ?>
 </table>
 </body>
