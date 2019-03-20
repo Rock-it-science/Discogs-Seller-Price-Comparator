@@ -55,6 +55,8 @@ if(!$checkTableQuery){//Table does not exist
       flush();
       //Every 24 pages (2400 items) take a 15-second break to avoid 429 exception
       if($p%25==0){
+        echo '<script>document.getElementById("status").innerHTML = "Sleeping"</script>';
+        flush();
         sleep(15);
       }
       try{
@@ -68,6 +70,7 @@ if(!$checkTableQuery){//Table does not exist
       }
       catch(Exception $e){
         echo '429';
+        break;
         //Could attempt to keep requesting after the exception, but there's a good chance I'll get banned
       }
     }

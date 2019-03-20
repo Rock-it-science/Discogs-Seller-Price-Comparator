@@ -7,11 +7,14 @@
     <th>Seller</th>
     <th>Price</th>
     <th>Median Price</th>
+    <th>Value</th>
     <th>Condition</th>
   </tr>
 <?php
 //Get installed dependancies from autoload
 require '../vendor/autoload.php';
+//We're also using simpl html dom for web scraping in this file
+require '../vendor/simplehtmldom/simple_html_dom.php';
 
 //Setting infinite execution time
 ini_set('max_execution_time', 0);
@@ -69,16 +72,45 @@ foreach($wantlist as &$item){//Iterate through all items in wantlist
       $release = $client->getRelease([
         'id' => $item
       ]);
+      //Get artist and title
+      $artistName = $release['artists_sort'];
+      $releaseTitle = $release['title'];
       //Get price of item from query
       while($row = $itemQuery->fetch_assoc()){$itemPrice = $row['price'];}
       //Get just seller's name (cut of seller_)
       $sellerCut = substr($seller,7);
+
+      //Scrape release page for median price since its not included in the pagination for some reason
+      //First we need to form the url which follows this template: https://www.discogs.com/artist-release/release/releaseID
+      $artistDashes = str_replace(" ", "-", $release['artists_sort']);
+      $titleDashes = str_replace(" ", "-", $release['title']);
+      $url = 'https://www.discogs.com/'.$artistDashes.'-'.$titleDashes.'/release/'.$item;
+      $html = file_get_html($url);
+      //The median price is in an li element and contains text 'Median'
+      foreach($html->find('li') as $element){
+        if(strpos($element, 'Median')){
+          //Extract price from element
+          $medianPrice = floatval(substr($element, (strpos($element, '$')+1)));
+        }
+      }
+
+      //Assign value rating
+      $value = 'bad';
+      //If price < 0.9*medianPrice -> very good
+      if($itemPrice < (0.75*$medianPrice)){$value = 'very good';}
+      //Else if price < medianPrice -> good
+      else if($itemPrice < ($medianPrice)){$value = 'good';}
+      //Else if price < 1.1*medianPrice ->okay
+      else if($itemPrice < (1.25*$medianPrice)){$value = 'okay';}
+      //Else ->bad
+
       echo '<tr>
-              <td>'.$release['artists_sort'].'</td>
-              <td>'.$release['title'].'</td>
+              <td>'.$artistName.'</td>
+              <td>'.$releaseTitle.'</td>
               <td>'.$sellerCut.'</td>
               <td>'.$itemPrice.'</td>
-              <td></td>
+              <td>'.$medianPrice.'</td>
+              <td>'.$value.'</td>
               <td></td>
             </tr>';
     }

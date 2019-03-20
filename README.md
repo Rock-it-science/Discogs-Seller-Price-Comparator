@@ -9,7 +9,6 @@ What it does now:
 - Analyze: Finds items that are in both the user's wantlist, and for sale by the seller
 
 Future Plans/ideas:
-- Make a loading bar that shows progress when downloading data
 - Find median price of each release
 - Allow for sellers with bigger inventories (handle 429)
 - Allow for comparing prices between sellers
