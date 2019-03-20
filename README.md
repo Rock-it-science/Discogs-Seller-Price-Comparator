@@ -9,9 +9,10 @@ What it does now:
 - Analyze: Finds items that are in both the user's wantlist, and for sale by the seller
 
 Future Plans/ideas:
-- Add more info about each release on dpc page
 - Allow for comparing prices between sellers
 - Enter a specific list of items in addition to wantlist
   - List contains higher priority items from wantlist
     - Get items from high-priority list and find sellers selling those, but then check which of those sellers is also selling the most items from the wantlist
 - Track price updates
+- Ability to select which user is being analyzed
+- Add seller's country and shipping policies/price estimates
